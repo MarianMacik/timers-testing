@@ -97,6 +97,12 @@
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
+            <!-- Ignore HHH000444: Encountered request for locking however dialect reports that database
+                 prefers locking be done in a separate select (follow-on locking);
+                 results will be locked after initial query executes  -->
+            <logger category="org.hibernate.loader.Loader">
+                <level name="ERROR"/>
+            </logger>
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
