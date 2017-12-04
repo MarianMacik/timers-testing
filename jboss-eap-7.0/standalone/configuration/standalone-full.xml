@@ -96,13 +96,7 @@
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
-            </periodic-rotating-file-handler>
-            <!-- Ignore HHH000444: Encountered request for locking however dialect reports that database
-                 prefers locking be done in a separate select (follow-on locking);
-                 results will be locked after initial query executes  -->
-            <logger category="org.hibernate.loader.Loader">
-                <level name="ERROR"/>
-            </logger>
+            </periodic-rotating-file-handler>  
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -150,35 +144,47 @@
                 </datasource>
                 <!-- Datasource for jBPM -->
                 <xa-datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="jbpmDS" enabled="true" use-java-context="true">
-                    <xa-datasource-property name="URL">
-                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                    <xa-datasource-property name="ServerName">
+                        postgres-93.hosts.mwqe.eng.bos.redhat.com
                     </xa-datasource-property>
-                    <driver>ojdbc6.jar</driver>
-                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <xa-datasource-property name="PortNumber">
+                        5432
+                    </xa-datasource-property>
+                    <xa-datasource-property name="DatabaseName">
+                        dballo07
+                    </xa-datasource-property>
+                    <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+                    <driver>postgresql.jar</driver>
                     <xa-pool>
                         <max-pool-size>100</max-pool-size>
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </xa-pool>
                     <security>
-                        <user-name>bpms</user-name>
-                        <password>bpms</password>
+                        <user-name>dballo07</user-name>
+                        <password>dballo07</password>
                     </security>
                 </xa-datasource>
                 <!-- Datasource for EJB Timers with ransaction isolation level set to READ COMMITTED -->
                 <xa-datasource jndi-name="java:jboss/datasources/EJBTimersDS" pool-name="EJBTimersDS" enabled="true" use-java-context="true">
-                    <xa-datasource-property name="URL">
-                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                    <xa-datasource-property name="ServerName">
+                        postgres-93.hosts.mwqe.eng.bos.redhat.com
                     </xa-datasource-property>
+                    <xa-datasource-property name="PortNumber">
+                        5432
+                    </xa-datasource-property>
+                    <xa-datasource-property name="DatabaseName">
+                        dballo07
+                    </xa-datasource-property>
+                    <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+                    <driver>postgresql.jar</driver>
                     <transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
-                    <driver>ojdbc6.jar</driver>
-                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
                     <xa-pool>
                         <max-pool-size>10</max-pool-size>
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </xa-pool>
                     <security>
-                        <user-name>bpms</user-name>
-                        <password>bpms</password>
+                        <user-name>dballo07</user-name>
+                        <password>dballo07</password>
                     </security>
                 </xa-datasource>
                 <drivers>
@@ -304,7 +310,6 @@
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:iiop-openjdk:1.0">
-            <orb socket-binding="iiop" ssl-socket-binding="iiop-ssl"/>
             <initializers transactions="spec" security="identity"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
@@ -346,11 +351,11 @@
         <subsystem xmlns="urn:jboss:domain:messaging-activemq:1.0">
             <server name="default">
                 <security-setting name="#">
-                    <role name="guest" send="true" consume="true" create-non-durable-queue="true" delete-non-durable-queue="true"/>
+                    <role name="guest" delete-non-durable-queue="true" create-non-durable-queue="true" consume="true" send="true"/>
                 </security-setting>
-                <address-setting name="#" dead-letter-address="jms.queue.DLQ" expiry-address="jms.queue.ExpiryQueue" max-size-bytes="10485760" page-size-bytes="2097152" message-counter-history-day-limit="10"/>
-                <http-connector name="http-connector" socket-binding="http" endpoint="http-acceptor"/>
-                <http-connector name="http-connector-throughput" socket-binding="http" endpoint="http-acceptor-throughput">
+                <address-setting name="#" message-counter-history-day-limit="10" page-size-bytes="2097152" max-size-bytes="10485760" expiry-address="jms.queue.ExpiryQueue" dead-letter-address="jms.queue.DLQ"/>
+                <http-connector name="http-connector" endpoint="http-acceptor" socket-binding="http"/>
+                <http-connector name="http-connector-throughput" endpoint="http-acceptor-throughput" socket-binding="http">
                     <param name="batch-delay" value="50"/>
                 </http-connector>
                 <in-vm-connector name="in-vm" server-id="0"/>
@@ -362,9 +367,9 @@
                 <in-vm-acceptor name="in-vm" server-id="0"/>
                 <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
                 <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
-                <connection-factory name="InVmConnectionFactory" connectors="in-vm" entries="java:/ConnectionFactory"/>
-                <connection-factory name="RemoteConnectionFactory" connectors="http-connector" entries="java:jboss/exported/jms/RemoteConnectionFactory"/>
-                <pooled-connection-factory name="activemq-ra" transaction="xa" connectors="in-vm" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory"/>
+                <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
+                <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
+                <pooled-connection-factory name="activemq-ra" transaction="xa" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm"/>
             </server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
