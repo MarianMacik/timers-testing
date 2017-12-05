@@ -151,7 +151,7 @@
                 <!-- Datasource for jBPM -->
                 <xa-datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="jbpmDS" enabled="true" use-java-context="true">
                     <xa-datasource-property name="URL">
-                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                        jdbc:oracle:thin:@oracle-12cr2.hosts.mwqe.eng.bos.redhat.com:1521:dballo
                     </xa-datasource-property>
                     <driver>ojdbc6.jar</driver>
                     <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
@@ -160,14 +160,14 @@
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </xa-pool>
                     <security>
-                        <user-name>bpms</user-name>
-                        <password>bpms</password>
+                        <user-name>crash3</user-name>
+                        <password>crash3</password>
                     </security>
                 </xa-datasource>
                 <!-- Datasource for EJB Timers with ransaction isolation level set to READ COMMITTED -->
                 <xa-datasource jndi-name="java:jboss/datasources/EJBTimersDS" pool-name="EJBTimersDS" enabled="true" use-java-context="true">
                     <xa-datasource-property name="URL">
-                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                        jdbc:oracle:thin:@oracle-12cr2.hosts.mwqe.eng.bos.redhat.com:1521:dballo
                     </xa-datasource-property>
                     <transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
                     <driver>ojdbc6.jar</driver>
@@ -177,8 +177,8 @@
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </xa-pool>
                     <security>
-                        <user-name>bpms</user-name>
-                        <password>bpms</password>
+                        <user-name>crash3</user-name>
+                        <password>crash3</password>
                     </security>
                 </xa-datasource>
                 <drivers>
