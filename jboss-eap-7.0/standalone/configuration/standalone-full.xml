@@ -177,8 +177,8 @@
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </xa-pool>
                     <security>
-                        <user-name>crash3</user-name>
-                        <password>crash3</password>
+                        <user-name>crash2</user-name>
+                        <password>crash2</password>
                     </security>
                 </xa-datasource>
                 <drivers>
