@@ -168,6 +168,7 @@
                     <xa-pool>
                         <max-pool-size>100</max-pool-size>
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
+                        <is-same-rm-override>false</is-same-rm-override>
                     </xa-pool>
                     <security>
                         <user-name>bpms</user-name>
@@ -175,7 +176,7 @@
                     </security>
                 </xa-datasource>
                 <!-- Datasource for EJB Timers with ransaction isolation level set to READ COMMITTED -->
-                <!--xa-datasource jndi-name="java:jboss/datasources/EJBTimersDS" pool-name="EJBTimersDS" enabled="true" use-java-context="true">
+                <xa-datasource jndi-name="java:jboss/datasources/EJBTimersDS" pool-name="EJBTimersDS" enabled="true" use-java-context="true">
                     <xa-datasource-property name="URL">
                         jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
                     </xa-datasource-property>
@@ -185,13 +186,14 @@
                     <xa-pool>
                         <max-pool-size>10</max-pool-size>
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
+			<is-same-rm-override>false</is-same-rm-override>
                     </xa-pool>
                     <security>
-                        <user-name>bpms</user-name>
-                        <password>bpms</password>
+                        <user-name>brms</user-name>
+                        <password>brms</password>
                     </security>
-                </xa-datasource-->
-                <datasource jta="true" jndi-name="java:jboss/datasources/EJBTimersDS" pool-name="EJBTimersDS" enabled="true" use-java-context="true">
+                </xa-datasource>
+                <!--datasource jta="true" jndi-name="java:jboss/datasources/EJBTimersDS" pool-name="EJBTimersDS" enabled="true" use-java-context="true">
                     <connection-url>
                         jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
                     </connection-url>
@@ -200,7 +202,7 @@
                         <user-name>bpms</user-name>
                         <password>bpms</password>
                     </security>
-                </datasource>
+                </datasource-->
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
