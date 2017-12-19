@@ -97,6 +97,12 @@
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
+	    <!-- Ignore HHH000444: Encountered request for locking however dialect reports that database
+                 prefers locking be done in a separate select (follow-on locking);
+                 results will be locked after initial query executes  -->
+            <logger category="org.hibernate.loader.Loader">
+                <level name="ERROR"/>
+            </logger>
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -140,6 +146,53 @@
                     <security>
                         <user-name>sa</user-name>
                         <password>sa</password>
+                    </security>
+                </datasource>
+		<!-- Datasource for jBPM -->
+                <xa-datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="jbpmDS" enabled="true" use-java-context="true">
+                    <xa-datasource-property name="URL">
+                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                    </xa-datasource-property>
+                    <driver>ojdbc6.jar</driver>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <xa-pool>
+                        <max-pool-size>100</max-pool-size>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                        <is-same-rm-override>false</is-same-rm-override>
+                    </xa-pool>
+                    <security>
+                        <user-name>bpms</user-name>
+                        <password>bpms</password>
+                    </security>
+                </xa-datasource>
+                <!-- Datasource for Quartz Timers -->
+                <xa-datasource jndi-name="java:jboss/datasources/QuartzXADS" pool-name="QuartzXADS" enabled="true" use-java-context="true">
+                    <xa-datasource-property name="URL">
+                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                    </xa-datasource-property>
+                    <driver>ojdbc6.jar</driver>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <xa-pool>
+                        <max-pool-size>100</max-pool-size>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+			<is-same-rm-override>false</is-same-rm-override>
+                    </xa-pool>
+                    <security>
+                        <user-name>brms</user-name>
+                        <password>brms</password>
+                    </security>
+                </xa-datasource>
+                <datasource jta="true" jndi-name="java:jboss/datasources/QuartznonXADS" pool-name="QuartznonXADS" enabled="true" use-java-context="true">
+                    <connection-url>
+                        jdbc:oracle:thin:@brmsperf04db.mw.lab.eng.bos.redhat.com:1521:perfdb
+                    </connection-url>
+ 		    <pool>
+                        <max-pool-size>100</max-pool-size>
+                    </pool>
+                    <driver>ojdbc6.jar</driver>
+                    <security>
+                        <user-name>brms</user-name>
+                        <password>brms</password>
                     </security>
                 </datasource>
                 <drivers>
